@@ -15,7 +15,11 @@
       },
       "clean": {
         "cache": false
-      }
+      },
+      "test": {
+      "dependsOn": ["^test"],
+      "outputs": []
+    }
     }
   }
   

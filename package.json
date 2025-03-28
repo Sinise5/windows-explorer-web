@@ -10,7 +10,8 @@
     "build": "turbo run build --parallel",
     "lint": "turbo run lint --parallel",
     "format": "turbo run format --parallel",
-    "init": "echo 'Turbo Init Success!'"
+    "init": "echo 'Turbo Init Success!'",
+    "test": "turbo run test"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.1",

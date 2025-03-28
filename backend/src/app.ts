@@ -3,6 +3,7 @@ import { folderRoutes } from "./routes/folderRoutes";
 import { fileRoutes } from "./routes/fileRoutes";
 import { cors } from "@elysiajs/cors";
 import { errorHandler } from "./middlewares/errorHandler";
+import { folderRoutesV1 } from "./versions/v1/folderRoutes";
 
 
 export const app = new Elysia()
@@ -10,6 +11,7 @@ export const app = new Elysia()
   .use(folderRoutes)
   .use(fileRoutes)
   .use(errorHandler)
+  .use(folderRoutesV1)
  // .listen(3000);
 
  export const server = app.listen(3000);

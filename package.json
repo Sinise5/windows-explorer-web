@@ -1,0 +1,25 @@
+{
+  "name": "monorepo-project",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build --parallel",
+    "lint": "turbo run lint --parallel",
+    "format": "turbo run format --parallel",
+    "init": "echo 'Turbo Init Success!'"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@testing-library/vue": "^8.1.0",
+    "jsdom": "^26.0.0",
+    "turbo": "^2.4.4"
+  },
+  "packageManager": "bun@1.2.6",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.3"
+  }
+}

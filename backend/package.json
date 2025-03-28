@@ -3,6 +3,13 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "bun run src/app.ts",
+    "build": "bun build src/app.ts --outdir dist",
+    "start": "bun run dist/index.js",
+    "test": "jest --coverage"
+  },
   "devDependencies": {
     "@prisma/client": "^6.5.0",
     "@types/bun": "latest",
@@ -16,6 +23,7 @@
     "prisma": "^6.5.0",
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.0",
+    "turbo": "^2.4.4",
     "vitest": "^3.0.9"
   },
   "peerDependencies": {

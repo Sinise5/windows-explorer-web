@@ -1,27 +1,36 @@
-import { FolderService } from '../../../src/services/folderService';
-import { FolderRepository } from '../../../src/repositories/folderRepository';
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { FolderService } from "../../../src/services/folderService";
+import { FolderRepository } from "../../../src/repositories/folderRepository";
 
-jest.mock('../../../src/modules/folder/repositories/folderRepository');
+vi.spyOn(FolderRepository, "getAllFolders");
+vi.spyOn(FolderRepository, "getFolderById");
+vi.spyOn(FolderRepository, "createFolder");
+vi.spyOn(FolderRepository, "deleteFolder");
 
-describe('Folder Service', () => {
-  it('should create a new folder', async () => {
-    const mockFolder = { id: 1, name: 'Documents', parentId: null };
-
-    (FolderRepository.createFolder as jest.Mock).mockResolvedValue(mockFolder);
-
-    const result = await FolderService.addFolder('Documents', 'null');
-
-    expect(result).toEqual(mockFolder);
-    expect(FolderRepository.createFolder).toHaveBeenCalledWith('Documents', null);
+describe("FolderService", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('should get all folders', async () => {
-    const mockFolders = [{ id: 1, name: 'Documents' }, { id: 2, name: 'Pictures' }];
+  it("should fetch all folders", async () => {
+    FolderRepository.getAllFolders.mockResolvedValue([{ id: 1, name: "Root Folder" }]);
 
-    (FolderRepository.getAllFolders as jest.Mock).mockResolvedValue(mockFolders);
+    const folders = await FolderService.fetchAllFolders();
+    expect(folders).toEqual([{ id: 1, name: "Root Folder" }]);
+    expect(FolderRepository.getAllFolders).toHaveBeenCalled();
+  });
 
-    const result = await FolderService.fetchAllFolders();
+  it("should add a new folder", async () => {
+    FolderRepository.createFolder.mockResolvedValue({ id: 2, name: "New Folder" });
 
-    expect(result).toEqual(mockFolders);
+    const newFolder = await FolderService.addFolder("New Folder");
+    expect(newFolder).toEqual({ id: 2, name: "New Folder" });
+    expect(FolderRepository.createFolder).toHaveBeenCalled();
+  });
+
+  it("should throw an error if folder deletion fails", async () => {
+    FolderRepository.deleteFolder.mockRejectedValue(new Error("Gagal menghapus folder"));
+
+    await expect(FolderService.deleteFolder(99)).rejects.toThrow("Gagal menghapus folder");
   });
 });

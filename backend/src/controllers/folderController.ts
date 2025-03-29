@@ -1,38 +1,106 @@
 import { FolderService } from "../services/folderService";
 
 export class FolderController {
-  static async getAllFolders() {
-    return FolderService.fetchAllFolders();
+  static async getAllFolders(req: Request) {
+    try {
+      const folders = await FolderService.fetchAllFolders();
+      return new Response(JSON.stringify(folders), { status: 200 });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500 });
+    }
+    
   }
 
-  static async getFolderById({ params }: { params: { id: string } }) {
-    return FolderService.fetchFolderById(params.id);
+  static async getFolderById(req: Request) {
+    try {
+      const url = new URL(req.url);
+      const id = url.pathname.split("/").pop();
+      if (!id) throw new Error("ID tidak ditemukan.");
+
+      const folder = await FolderService.fetchFolderById(id);
+      return new Response(JSON.stringify(folder), { status: 200 });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500 });
+    }
+    
+    
   }
 
-  static async createFolder({ body }: { body: { name: string; parentId?: string } }) {
-    return FolderService.addFolder(body.name, body.parentId);
-  }
-
-  static async getSubfolders({ params }: any) {
-    return await FolderService.getSubfolders(Number(params.id));
-  }
-
-  static async searchFolders({ query }: any) {
-    return await FolderService.searchFolders(query.q);
-  }
-
-  static async deleteFolder({ params }: any) {
-    const folderId = parseInt(params.id);
-    if (isNaN(folderId)) throw new Error("ID tidak valid.");
-
-    return await FolderService.deleteFolder(folderId);
-  }
-
-  static async getFolders(req: any) {
-    const page = parseInt(req.query.page) || 1;
-    const perPage = parseInt(req.query.perPage) || 10;
-    return await FolderService.getFolders(page, perPage);
+  static async createFolder({ body }: { body: unknown }) {
+    try {
+      const data = body as { name: string; parentId?: string };
+  
+      if (!data.name) throw new Error("Nama folder wajib diisi.");
+  
+      const newFolder = await FolderService.addFolder(data.name, data.parentId);
+  
+      return new Response(JSON.stringify(newFolder), {
+        status: 201,
+        headers: { "Content-Type": "application/json" },
+      });
+  
+    } catch (error) {
+      return new Response(JSON.stringify({ error: (error as Error).message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
   }
   
 
+  static async getSubfolders(req: Request) {
+    try {
+      const url = new URL(req.url);
+      const id = url.pathname.split("/").pop();
+      if (!id || isNaN(Number(id))) throw new Error("ID tidak valid.");
+
+      const subfolders = await FolderService.getSubfolders(Number(id));
+      return new Response(JSON.stringify(subfolders), { status: 200 });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500 });
+    }
+    
+  }
+
+  static async searchFolders(req: Request) {
+    try {
+      const url = new URL(req.url);
+      const query = url.searchParams.get("q");
+      if (!query) throw new Error("Query pencarian diperlukan.");
+
+      const results = await FolderService.searchFolders(query);
+      return new Response(JSON.stringify(results), { status: 200 });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500 });
+    }
+    
+  }
+
+  static async deleteFolder(req: Request) {
+    try {
+      const url = new URL(req.url);
+      const id = url.pathname.split("/").pop();
+      if (!id || isNaN(Number(id))) throw new Error("ID tidak valid.");
+
+      await FolderService.deleteFolder(Number(id));
+      return new Response(JSON.stringify({ message: "Folder berhasil dihapus." }), { status: 200 });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500 });
+    }
+    
+  }
+
+  static async getFolders(req: Request) {
+    try {
+      const url = new URL(req.url);
+      const page = parseInt(url.searchParams.get("page") || "1");
+      const perPage = parseInt(url.searchParams.get("perPage") || "10");
+
+      const folders = await FolderService.getFolders(page, perPage);
+      return new Response(JSON.stringify(folders), { status: 200 });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500 });
+    }
+    
+  }
 }

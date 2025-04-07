@@ -6,6 +6,8 @@ Backend aplikasi ini dibangun menggunakan **Elysia.js + Bun**, dengan arsitektur
 
 ---
 
+![Contoh Gambar](localhost.png)
+
 ## 🏗 Teknologi yang Digunakan
 
 | Teknologi   | Deskripsi |

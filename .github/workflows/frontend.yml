@@ -1,0 +1,35 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Navigate to Frontend Directory
+      run: cd packages/frontend
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+    - name: Install dependencies
+      run: npm install
+    - name: Run tests
+      run: npm run test
+    - name: Build project
+      run: npm run build
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages
+        folder: dist
+    - name: Clean up
+      run: |
+        npm cache clean --force
+        npm uninstall

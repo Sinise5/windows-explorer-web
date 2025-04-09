@@ -33,7 +33,7 @@ jobs:
     - name: Install dependencies
       run: bun install
     - name: Type check
-      run: bun run tsc --noEmit
+      run: npx tsc --noEmit
     - name: Prisma Migrate
       run: |
         export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/db_explorer"

@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { folderRoutes } from "./src/routes/folderRoutes";
-import { db } from "./src/config/database";
+import  db  from "./src/config/database";
 
 const app = new Elysia()
   .use(folderRoutes)

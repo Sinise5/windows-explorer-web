@@ -29,11 +29,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Navigate to Backend Directory
       run: cd backend
-    - name: Set up Bun
-      run: |
-        curl -fsSL https://bun.sh/install | bash
-        echo "$HOME/.bun/bin" >> $GITHUB_PATH
-        bun --version
+    - uses: oven-sh/setup-bun@v1
     - name: Install dependencies
       run: bun install
     - name: Type check
@@ -53,3 +49,4 @@ jobs:
     - name: Drop database
       run: |
         psql -U postgres -c "DROP DATABASE db_explorer;"
+
